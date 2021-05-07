@@ -47,17 +47,18 @@ def start_svc_loop(input_data, cv_indices, k_fold):
         svc_gamma = 0.1
         svc_counter = 1
 
-        max_gamma = 10000
+        max_gamma = 100000
         gamma_step = 1
-        gamma_step_modifier = 1.5
+        gamma_step_modifier = 4
 
         max_c = 200001
         c_step = 1
-        c_step_modifier = 1.5
+        c_step_modifier = 4
+
         for kernel in svc_kernel_dict:
             while svc_gamma < max_gamma:
-                while svc_c < c_step:
-                    print("Testing: " + svc_c + ", " + kernel + ", " + svc_gamma)
+                while svc_c < max_c:
+                    print("Testing: " + str(svc_c) + ", " + kernel + ", " + str(svc_gamma))
                     file.write(
                         run_svc(
                             svc_c, kernel, svc_gamma,
@@ -70,12 +71,12 @@ def start_svc_loop(input_data, cv_indices, k_fold):
                     file.flush()
                     svc_c += c_step
                     c_step *= c_step_modifier
-
+                svc_c = 2
                 svc_gamma += gamma_step
                 gamma_step *= gamma_step_modifier
             # exit while svc_c
             svc_gamma = 0.1
-            svc_c = 2
+
         # exit for kernel
         file.flush()
 

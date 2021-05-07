@@ -1,0 +1,1 @@
+type,c_input,kernel_input,gamma_input,mean_test_score,std_test_score,mean_error_rate,std_error_rate,mean_fit_time,std_fit_time,mean_score_time,std_score_time

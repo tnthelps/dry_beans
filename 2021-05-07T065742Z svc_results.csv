@@ -1,0 +1,6 @@
+type,c_input,kernel_input,gamma_input,mean_test_score,std_test_score,mean_error_rate,std_error_rate,mean_fit_time,std_fit_time,mean_score_time,std_score_time
+SVC,0.200,rbf,0.100,0.261,0.011,0.739,0.989,25.616,0.200,1.420,0.049
+SVC,1.200,rbf,0.100,0.270,0.011,0.730,0.989,27.921,0.202,1.283,0.138
+SVC,5.200,rbf,0.100,0.270,0.011,0.730,0.989,28.363,0.459,1.368,0.118
+SVC,21.200,rbf,0.100,0.270,0.011,0.730,0.989,28.473,0.236,1.390,0.061
+SVC,85.200,rbf,0.100,0.270,0.011,0.730,0.989,28.555,0.204,1.442,0.052
