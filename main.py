@@ -46,24 +46,33 @@ def start_svc_loop(input_data, cv_indices, k_fold):
         svc_kernel_dict = ['rbf', 'sigmoid']
         svc_gamma = 0.1
         svc_counter = 1
+
+        max_gamma = 10000
+        gamma_step = 1
+        gamma_step_modifier = 1.5
+
+        max_c = 200001
+        c_step = 1
+        c_step_modifier = 1.5
         for kernel in svc_kernel_dict:
-            while svc_c < 200001:
-                print("Testing: " + svc_c + ", " + kernel + ", " + svc_gamma)
-                file.write(
-                    run_svc(
-                        svc_c, kernel, svc_gamma,
-                        input_data, cv_indices, k_fold
+            while svc_gamma < max_gamma:
+                while svc_c < c_step:
+                    print("Testing: " + svc_c + ", " + kernel + ", " + svc_gamma)
+                    file.write(
+                        run_svc(
+                            svc_c, kernel, svc_gamma,
+                            input_data, cv_indices, k_fold
+                        )
                     )
-                )
 
-                print("svc iterations: " + str(svc_counter))
+                    print("svc iterations: " + str(svc_counter))
+                    svc_counter += 1
+                    file.flush()
+                    svc_c += c_step
+                    c_step *= c_step_modifier
 
-                svc_counter += 1
-
-                file.flush()
-
-                svc_c = svc_c * 10
-                svc_gamma = svc_gamma * 10
+                svc_gamma += gamma_step
+                gamma_step *= gamma_step_modifier
             # exit while svc_c
             svc_gamma = 0.1
             svc_c = 2
@@ -77,6 +86,8 @@ def start_ann_loop(input_data, cv_indices, k_fold):
     filepath_ann = time.strftime("%Y-%m-%dT%H%M%SZ", time.gmtime()) + " ann_results.csv"
 
     print("Logging ann data to local file: '%s'" % filepath_ann)
+
+    layer_structures = [[5], [10, 10], [10, 10, 10]]
 
     with open(filepath_ann, "a", encoding='windows-1252') as file:
         file.write("type,hidden_layer_sizes_input,activation_input,batch_size_input,solver_input,alpha_input,"
@@ -99,14 +110,14 @@ def start_ann_loop(input_data, cv_indices, k_fold):
 
         for activation in ann_activation_input:
             for solver in ann_solver_input:
-                while ann_hidden_layer_sizes_input < 400:
+                for layer_structure in layer_structures:
                     print("Testing: " + str(ann_hidden_layer_sizes_input) + ", " + str(ann_alpha_input) + ", "
                           + str(ann_max_iter_input) + ", " + activation + ", " + str(ann_batch_size_input)
                           + ", " + solver)
 
                     file.write(
                         run_ann(
-                            ann_hidden_layer_sizes_input,
+                            *layer_structure,
                             ann_alpha_input, ann_max_iter_input,
                             activation,
                             ann_batch_size_input,
@@ -114,7 +125,6 @@ def start_ann_loop(input_data, cv_indices, k_fold):
                             input_data, cv_indices, k_fold
                         )
                     )
-
                     print("ann iterations: " + str(ann_counter))
                     ann_counter += 1
 
@@ -201,6 +211,10 @@ def run_svc(c_input, kernel_input, gamma_input, input_data, cv_indices, k_fold):
                 std(scores["score_time"])
             )
             )
+
+
+
+
 
 
 # run main method
