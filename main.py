@@ -26,9 +26,9 @@ def main():
     for train, test in k_fold.split(data[0]):
         print('train: %s, test: %s' % (train, test))
 
-    start_svc_loop(input_data, cv_indices, k_fold)
+    # start_svc_loop(input_data, cv_indices, k_fold)
 
-    # start_ann_loop(input_data, cv_indices, k_fold)
+    start_ann_loop(input_data, cv_indices, k_fold)
 
 
 def start_svc_loop(input_data, cv_indices, k_fold):
@@ -90,6 +90,7 @@ def start_ann_loop(input_data, cv_indices, k_fold):
         ann_batch_size_input = 10
 
         # layers not currently implemented
+        # (10,10,10)
         ann_layer_count = 1
 
         ann_solver_input = ['lbfgs', 'sgd', 'adam']
@@ -107,6 +108,7 @@ def start_ann_loop(input_data, cv_indices, k_fold):
                     file.write(
                         run_ann(
                             ann_hidden_layer_sizes_input,
+                            ann_layer_count,
                             ann_alpha_input, ann_max_iter_input,
                             activation,
                             ann_batch_size_input,
@@ -121,18 +123,21 @@ def start_ann_loop(input_data, cv_indices, k_fold):
                     file.flush()
 
                     ann_hidden_layer_sizes_input += 50
+                    ann_layer_count += 5
                     ann_alpha_input = ann_alpha_input * 10
                     ann_max_iter_input += 10
                     ann_batch_size_input += 10
                 # exit while
                 # reset the variables for next solver
                 ann_hidden_layer_sizes_input = 50
+                ann_layer_count += 5
                 ann_alpha_input = 0.0001
                 ann_max_iter_input = 10
                 ann_batch_size_input = 10
             # exit solver loop
             # reset the variables for next activation
             ann_hidden_layer_sizes_input = 50
+            ann_layer_count += 5
             ann_alpha_input = 0.0001
             ann_max_iter_input = 10
             ann_batch_size_input = 10
@@ -142,10 +147,10 @@ def start_ann_loop(input_data, cv_indices, k_fold):
     print("ANN has finished computing")
 
 
-def run_ann(hidden_layer_sizes_input, alpha_input, max_iter_input, activation_input, batch_size_input,
+def run_ann(hidden_layer_sizes_input, ann_layer_count, alpha_input, max_iter_input, activation_input, batch_size_input,
             solver_input, input_data, cv_indices, k_fold):
     ann = MLPClassifier(
-        hidden_layer_sizes=hidden_layer_sizes_input,
+        hidden_layer_sizes=(hidden_layer_sizes_input, ann_layer_count),
         activation=activation_input,
         batch_size=batch_size_input,
         solver=solver_input,
